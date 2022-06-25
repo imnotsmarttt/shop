@@ -1,8 +1,5 @@
 from django.db import models
-from mptt.models import MPTTModel, TreeForeignKey
 from django.template.defaultfilters import slugify as django_slugify
-
-from users.models import CustomUser
 
 alphabet = {'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
             'й': 'j', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
@@ -11,78 +8,71 @@ alphabet = {'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', '�
 
 
 def slugify(s):
-    """Транскрипция русского слага"""
+    """Транскрипция slug с кириллицы на англ алфавит"""
     return django_slugify(''.join(alphabet.get(w, w) for w in s.lower()))
 
 
-class ProductCategory(models.Model):
-    """Категория товаров"""
-    name = models.CharField(max_length=255, verbose_name='Категория товара')
-    slug = models.SlugField(max_length=255, unique=True)
+class ProductRubric(models.Model):
+    """Модель рубрики"""
+    name = models.CharField(max_length=255, verbose_name='Название рубрики')
+    slug = models.SlugField(unique=True, db_index=True)
+
+    class Meta:
+        db_table = 'ProductRubric'
 
     def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
+        # Автоматическая генерация слага
         self.slug = slugify(self.name)
-        super(ProductCategory, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
+
+
+class ProductType(models.Model):
+    """Модель типа товара"""
+    name = models.CharField(max_length=255, verbose_name='Название типа товара')
+    slug = models.SlugField(unique=True, db_index=True)
+
+    class Meta:
+        db_table = 'ProductType'
+
+    def __str__(self):
+        return self.name
 
 
 class Product(models.Model):
-    """Модель продукта"""
-    name = models.CharField(max_length=255, verbose_name='Название товара')
+    """Модель товара"""
+    name = models.CharField(max_length=255, verbose_name='Название товара', db_index=True)
+    slug = models.SlugField(unique=True, db_index=True, blank=True, null=True, default=None)
     author = models.CharField(max_length=255, verbose_name='ФИО автора')
     description = models.TextField(verbose_name='Описание товара')
+    image = models.ImageField(upload_to='product_img/', verbose_name='Картинка товара')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена товара')
-    created = models.DateTimeField(auto_now_add=True, verbose_name='Добавлен')
-    # Тип продукта(Цифровой и физичесский), при создании будет автоматически присвоено значение
-    type_of_product = models.CharField(max_length=255, verbose_name='Тип товара', blank=True)
-    slug = models.SlugField(unique=True, max_length=255, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     is_available = models.BooleanField()
-    category = models.ForeignKey('ProductCategory', on_delete=models.CASCADE, related_name='product')
+    rubric = models.ManyToManyField('ProductRubric', related_name='product')
+    # Тип товара (Цифровой, или материальный). При создании автоматически будет присвоено значение. Может быть одновременно два типа
+    type_of_product = models.ManyToManyField('ProductType', blank=True)
+    # Файл продукции присваевается только цифровому типу товара
+    file = models.FileField(upload_to='product_files/', verbose_name='Файл товара', blank=True, null=True)
+    # Вес и кол-во товара на складе присваевается только материальному товару
+    weight = models.PositiveIntegerField(verbose_name='Вес товара', blank=True, null=True)
+    count_of_product = models.PositiveIntegerField(verbose_name='Кол-во товара на складе', blank=True, null=True)
 
     class Meta:
         db_table = 'Product'
-        index_together = (('id', 'slug'),)
+
+    def save(self, *args, **kwargs):
+        # Проверка типа товара и генерация slug
+        if self.file and self.weight and self.count_of_product:
+            self.slug = 'material-and-digital-' + slugify(self.name)
+        elif self.file:
+            self.slug = 'digital-' + slugify(self.name)
+        elif self.weight and self.count_of_product:
+            self.slug = 'material-' + slugify(self.name)
+        return super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
-
-
-class DigitalProduct(Product):
-    """Модель Цифровой продукта"""
-    file = models.FileField()
-
-    def save(self, *args, **kwargs):
-        self.type_of_product = 'Цифровой'
-        self.slug = 'digital-' + slugify(self.name)
-        super(DigitalProduct, self).save(*args, **kwargs)
-
-    class Meta:
-        db_table = 'DigitalProduct'
-
-
-class MaterialProduct(Product):
-    """Модель физического продукта"""
-    weight = models.PositiveIntegerField(verbose_name='Вес товара')
-    count_of_product = models.PositiveIntegerField(verbose_name='Кол-во товаров на складе')
-
-    def save(self, *args, **kwargs):
-        self.type_of_product = 'Физический'
-        self.slug = 'material-' + slugify(self.name)
-        super(MaterialProduct, self).save(*args, **kwargs)
-
-    class Meta:
-        db_table = 'MaterialProduct'
-
-
-class ProductReview(MPTTModel):
-    """MPTT модель отзывов товара"""
-    content = models.TextField(verbose_name='Отзыв')
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='product_review')
-    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='review')
-    created = models.DateTimeField(auto_now_add=True)
-    parent = TreeForeignKey(CustomUser, on_delete=models.CASCADE, related_name='review_children', blank=True, null=True)
-
-    class Meta:
-        db_table = 'ProductReview'
+        return f'{self.name}.'
