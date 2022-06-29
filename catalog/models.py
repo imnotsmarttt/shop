@@ -1,5 +1,6 @@
 from django.db import models
 from django.template.defaultfilters import slugify as django_slugify
+from django.shortcuts import redirect
 
 alphabet = {'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
             'й': 'j', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
@@ -66,12 +67,15 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         # Проверка типа товара и генерация slug
-        if self.file and self.weight and self.count_of_product:
-            self.slug = 'material-and-digital-' + slugify(self.name)
-        elif self.file:
-            self.slug = 'digital-' + slugify(self.name)
-        elif self.weight and self.count_of_product:
-            self.slug = 'material-' + slugify(self.name)
+        try:
+            if self.file and self.weight and self.count_of_product:
+                self.slug = 'material-and-digital-' + slugify(self.name)
+            elif self.file:
+                self.slug = 'digital-' + slugify(self.name)
+            elif self.weight and self.count_of_product:
+                self.slug = 'material-' + slugify(self.name)
+        except:
+            return redirect('/admin/catalog/product/')
         return super().save(*args, **kwargs)
 
     def __str__(self):

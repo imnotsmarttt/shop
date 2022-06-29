@@ -45,7 +45,7 @@
                     <a href="{% url 'catalog' %}" class="btn btn-outline-dark filter-form-btn">Сбросить фильтры</a>
                 </form>
                 <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center product-container">
-                    {% for product in products %}
+                    {% for product in page_obj %}
                     <div class="col mb-5">
                         <div class="card h-100">
                             <!-- Product image-->
@@ -68,7 +68,25 @@
                     {% empty %}
                         По вашему запросу ничего не найдено
                     {% endfor %}
+                    <div class="pagination-block">
+                        <div class="pagination-block-content">
+                            {% if page_obj.has_previous %}
+                                <a class="btn btn-outline-dark" href="?page=1"> |< </a>
+                                <a class="btn btn-outline-dark" href="?page={{ page_obj.previous_page_number }}"> < </a>
+                            {% endif %}
+
+                            <span class="current">
+                                {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+                            </span>
+
+                            {% if page_obj.has_next %}
+                                <a class="btn btn-outline-dark" href="?page={{ page_obj.next_page_number }}"> > </a>
+                                <a class="btn btn-outline-dark" href="?page={{ page_obj.paginator.num_pages }}"> >| </a>
+                            {% endif %}
+                        </div>
+                    </div>{#PAGINATION#}
                 </div>
+
             </div>
         </section>
 {% endblock %}

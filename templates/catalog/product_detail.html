@@ -1,10 +1,58 @@
 {% extends '../index.html' %}
-
+{% load static %}
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block body %}
 
-    {{ product.name }}
-    {{ product.author }}
+<section class="py-5">
+    <div class="px-4 px-lg-5 mt-5 container">
+        {# product name #}
+        <h1 class="display-4 fw-bolder">{{ product.name }}</h1>
+        <div class="product-detail-ifo">
+             {# product img #}
+            <img class="product-detail-img" src="{% static product.image.url %}">
+            <dl class="product-detail-description">
+                <dt class="">Описание:</dt>
+                <dd class="">{{ product.description }}</dd>
+            </dl>
+
+            <form class="d-flex add-to-cart">
+                <button class="btn btn-outline-dark btn-add-to-cart" type="submit">
+                    <i class="bi-cart-fill me-1"></i>
+                    Добавить в корзину
+                </button>
+            </form>
+        </div>
+        <div class="info-about-product">
+            <dl class="product-detail-dl">
+                <dt class="product-detail-dt">Автор:</dt>
+                <dd class="product-detail-dd">{{ product.author }}</dd>
+            </dl>
+
+            <dl class="product-detail-dl">
+                <dt class="product-detail-dt">Цена:</dt>
+                <dd class="product-detail-dd">₴ {{ product.price }}</dd>
+            </dl>
+
+            <dl class="product-detail-dl">
+                <dt class="product-detail-dt">Жанры:</dt>
+                <dd class="product-detail-dd">
+                    {% for genre in product.rubric.all %}
+                    {{ genre }},
+                    {% endfor %}
+                </dd>
+            </dl>
+
+            <dl class="product-detail-dl">
+                <dt class="product-detail-dt">Тип продукта:</dt>
+                <dd class="product-detail-dd">
+                    {% for type in product.type_of_product.all %}
+                    {{ type }},
+                    {% endfor %}
+                </dd>
+            </dl>
+        </div>
+    </div>
+</section>
 
 {% endblock %}
