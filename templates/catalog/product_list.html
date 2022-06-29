@@ -1,0 +1,74 @@
+{% extends '../index.html' %}
+
+{% block title %}Каталог{% endblock %}
+
+{% block body %}
+{% load static %}
+<header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Shop in style</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">With this shop hompeage template</p>
+                </div>
+            </div>
+        </header>
+        <!-- Section-->
+
+
+        <section class="py-5">
+            <div class="px-4 px-lg-5 mt-5 flex-container product-container-n-filter">
+                <form class="filter-form " action="{% url 'catalog_filter' %}" method="get">
+                    <table>
+                        <tbody>
+                            <td><h5 class="fw-bolder">Тип товара:</h5></td>
+                            {% for type in types %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="type" value="{{ type.slug }}">
+                                    <span>{{ type.name }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                            <td><h5 class="fw-bolder">Категория:</h5></td>
+                            {% for rubric in rubrics %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="rubric" value="{{ rubric.slug }}">
+                                    <span>{{ rubric.name }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <button type="submit" class="btn btn-outline-dark filter-form-btn">Применить фильтр</button>
+                    <a href="{% url 'catalog' %}" class="btn btn-outline-dark filter-form-btn">Сбросить фильтры</a>
+                </form>
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center product-container">
+                    {% for product in products %}
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            <!-- Product image-->
+                            <img class="card-img-top product-img" src="{% static product.image.url %}" alt="..." />
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">{{ product.name }}</h5>
+                                    <!-- Product price-->
+                                    ₴ {{ product.price }}
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'product_detail' slug=product.slug %}">Подробнее</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                        По вашему запросу ничего не найдено
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+{% endblock %}

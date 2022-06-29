@@ -1,22 +1,38 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
+from django.db.models import Q
 
-from .models import Product, ProductType
-
-def index(request):
-    return render(request, 'index.html')
+from .models import Product, ProductType, ProductRubric
 
 
-class Catalog(ListView):
+class ProductList(ListView):
     model = Product
-    template_name = 'index.html'
+    template_name = 'catalog/product_list.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(*kwargs)
+        context['rubrics'] = ProductRubric.objects.all()
         context['types'] = ProductType.objects.all()
-        if self.kwargs:
-            type = ProductType.objects.get(slug=self.kwargs['type_slug'])
-            context['products'] = Product.objects.filter(type_of_product=type)
-        else:
-            context['products'] = Product.objects.all()
+        context['products'] = Product.objects.all()
         return context
+
+
+class ProductListFilter(ListView):
+    model = Product
+    template_name = 'catalog/product_list.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(*kwargs)
+        context['rubrics'] = ProductRubric.objects.all()
+        context['types'] = ProductType.objects.all()
+        context['products'] = Product.objects.filter(
+            Q(type_of_product__slug__in=self.request.GET.getlist('type')) |
+            Q(rubric__slug__in=self.request.GET.getlist('rubric'))
+        ).distinct()
+        return context
+
+
+class ProductDetail(DetailView):
+    model = Product
+    template_name = 'catalog/product_detail.html'
+

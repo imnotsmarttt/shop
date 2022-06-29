@@ -54,7 +54,7 @@ class Product(models.Model):
     is_available = models.BooleanField()
     rubric = models.ManyToManyField('ProductRubric', related_name='product')
     # Тип товара (Цифровой, или материальный). При создании автоматически будет присвоено значение. Может быть одновременно два типа
-    type_of_product = models.ManyToManyField('ProductType', blank=True)
+    type_of_product = models.ManyToManyField('ProductType', blank=True, default='type_of_product')
     # Файл продукции присваевается только цифровому типу товара
     file = models.FileField(upload_to='product_files/', verbose_name='Файл товара', blank=True, null=True)
     # Вес и кол-во товара на складе присваевается только материальному товару
