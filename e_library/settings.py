@@ -40,6 +40,8 @@ INSTALLED_APPS = [
 
     'catalog.apps.CatalogConfig',
     'users.apps.UsersConfig',
+    'cart.apps.CartConfig',
+    'orders.apps.OrdersConfig',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +67,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'cart.context_processors.cart',
+                'catalog.context_processors.header_context',
             ],
         },
     },
@@ -131,3 +136,5 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(STATICFILES_DIRS[0], 'media/')
+
+CART_SESSION_ID = 'cart'

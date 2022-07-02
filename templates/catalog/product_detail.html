@@ -16,8 +16,10 @@
                 <dd class="">{{ product.description }}</dd>
             </dl>
 
-            <form class="d-flex add-to-cart">
-                <button class="btn btn-outline-dark btn-add-to-cart" type="submit">
+            <form class="d-flex add-to-cart" method="post" action="{% url 'cart_add' pk=product.id %}">
+                {% csrf_token %}
+                {{ form }}
+                <button href="" class="btn btn-outline-dark btn-add-to-cart" type="submit">
                     <i class="bi-cart-fill me-1"></i>
                     Добавить в корзину
                 </button>

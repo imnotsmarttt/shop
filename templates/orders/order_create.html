@@ -1,0 +1,37 @@
+{% extends '../index.html' %}
+
+{% block title %}Создание заказа{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="cart-container">
+
+            <div class="cart-items">
+                <form method="post">
+                    <h2 class="fw-bolder">Оформление заказ</h2>
+                    {% csrf_token %}
+                    {{ form }}
+                    <button type="submit" class="btn btn-outline-dark">Подтвердить заказ</button>
+                </form>
+            </div>
+
+            <div class="cart-total-info bg-light">
+                <div class="cart-total-info-items">
+                    {% for item in cart %}
+                        {% with product=item.product %}
+                            <dl class="item-dl">
+                                <dt class="item-dd">{{ product.name }}:</dt>
+                                <dd class="item-dt">x{{ item.quantity }}, ₴ {{ item.price}}</dd>
+                            </dl>
+
+                        {% endwith %}
+                    {% endfor %}
+                </div>
+                <h4 class="text-center bg-dark text-white cart-total-price">Итог: ₴ {{ cart.get_total_price }}</h4>
+
+        </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends '../index.html' %}
+
+{% block title %}Корзина{% endblock %}
+
+{% load static %}
+{% block body %}
+<div class="container">
+    <h2 class="display-4 fw-bolder">Корзина</h2>
+    <div class="cart-container">
+
+
+        <div class="cart-items">
+            {% for item in cart %}
+                {% with product=item.product %}
+                    <div class="cart-item-container">
+                        <img class="cart-item-image" src="{% static product.image.url %}">
+                        <h5 class="cart-item-name">{{ product.name }}</h5><br>
+                        <p class="cart-item-type">
+                            {% for type in product.type_of_product.all %}
+                                {{ type }}
+                            {% endfor %}
+                        </p>
+                        <h5 class="cart-item-total-price">₴ {{ item.total_price }}</h5>
+                        <p class="cart-item-quantity">Кол-во: {{ item.quantity }}</p>
+                        <p class="cart-item-price">Цена: ₴ {{ item.price }}</p>
+                        <a href="{% url 'cart_del' pk=product.id %}" class="btn btn-outline-dark btn-remove-from-cart">Удалить</a>
+                    </div>
+                {% endwith %}
+            {% endfor %}
+        </div>
+        {# cart items container #}
+
+        <div class="cart-total-info bg-light">
+
+            <h4 class="text-center bg-dark text-white cart-total-price">Итог: ₴ {{ cart.get_total_price }}</h4>
+
+            <a href="{% url 'order_create' %}" class="btn btn-outline-dark btn-add-to-cart">Оформить заказ</a>
+        </div>
+        {# cart total info #}
+    </div>
+</div>
+{% endblock %}

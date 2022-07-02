@@ -1,0 +1,23 @@
+{% extends '../index.html' %}
+
+{% block title %}Информация о заказе{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+
+        <div class="order-created-container">
+            <h2 class="fw-bolder">Ваш заказ принят!</h2>
+            <p>Ваш заказ принят в обработку! Номер вашего заказа: №{{ order.id }}</p>
+            <p>ИНФОРМАЦИЯ О ЗКАЗЕ</p>
+            {% for item in order_items.all %}
+                    <dl class="item-dl order-created-dl">
+                        <dt class="item-dd">{{ item.item.name }}:</dt>
+                        <dd class="item-dt">x{{ item.quantity }}, ₴ {{ item.price}}</dd>
+                    </dl>
+            {% endfor %}
+        </div>
+
+    </div>
+
+{% endblock %}
