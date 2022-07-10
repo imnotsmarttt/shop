@@ -1,10 +1,18 @@
-from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
 
 from .models import Product
 
 from cart.forms import CartAddProductForm
+
+
+class MainPage(ListView):
+    template_name = 'catalog/main_page.html'
+    model = Product
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['']
 
 
 class ProductList(ListView):
