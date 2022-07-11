@@ -1,9 +1,10 @@
-from django.shortcuts import render, reverse
+from django.shortcuts import reverse
 from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, DetailView
 
 from .forms import OrderCreateForm
 from .models import OrderItem, Order
+from .tasks import order_created
 
 from cart.cart import Cart
 
@@ -21,6 +22,8 @@ class OrderCreate(CreateView):
                                      price=item['price'],
                                      quantity=item['quantity'])
         cart.clear()
+        # Запуск асинхронной задачи для отправки email пользователю
+        order_created.delay(order.id)
         return HttpResponseRedirect(reverse('order_created', kwargs={'pk': order.id}))
 
 

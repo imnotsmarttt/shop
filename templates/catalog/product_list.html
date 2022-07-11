@@ -21,26 +21,38 @@
                 <form class="filter-form " action="{% url 'catalog_filter' %}" method="get">
                     <table>
                         <tbody>
-                            <td><h5 class="fw-bolder">Тип товара:</h5></td>
-                            {% for type in types %}
-                            <tr>
-                                <td>
+                            <tr class="form-filter-tr">
+                                <td class="form-filter-td"><h5 class="fw-bolder">Тип товара:</h5></td>
+                                {% for type in types %}
+                                <td class="form-filter-td">
                                     <input type="checkbox" name="type" value="{{ type.slug }}">
-                                    <span>{{ type.name }}</span>
+                                    <span class="filter-checkbox-span">{{ type.name }}</span>
                                 </td>
+                                {% endfor %}
                             </tr>
-                            {% endfor %}
 
-                            <td><h5 class="fw-bolder">Категория:</h5></td>
-                            {% for rubric in rubrics %}
-                            <tr>
-                                <td>
+                            <tr class="form-filter-tr">
+                                <td class="form-filter-td"><h5 class="fw-bolder">Жанр:</h5></td>
+                                {% for rubric in rubrics %}
+                                <td class="form-filter-td">
                                     <input type="checkbox" name="rubric" value="{{ rubric.slug }}">
-                                    <span>{{ rubric.name }}</span>
+                                    <span class="filter-checkbox-span">{{ rubric.name }}</span>
                                 </td>
+                                {% endfor %}
                             </tr>
-                            {% endfor %}
+
+{#                            <tr class="form-filter-tr">#}
+{#                                <td class="form-filter-td"><h5 class="fw-bolder">Цена:</h5></td>#}
+{#                                <td class="form-filter-td-price">#}
+{#                                    <input class="form-filter-price" type="text" name="min_price" placeholder="{{ min_price.price }}">#}
+{#                                </td>#}
+{#                                <td class="form-filter-td-price">#}
+{#                                    <input class="form-filter-price" type="text" name="max_price" placeholder="{{ max_price.price }}">#}
+{#                                </td>#}
+{#                            </tr>#}
+
                         </tbody>
+                        <!--Filter table-->
                     </table>
                     <button type="submit" class="btn btn-outline-dark filter-form-btn">Применить фильтр</button>
                     <a href="{% url 'catalog' %}" class="btn btn-outline-dark filter-form-btn">Сбросить фильтры</a>

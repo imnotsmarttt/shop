@@ -11506,3 +11506,28 @@ textarea.form-control-lg {
   width: fit-content;
   margin: 0 auto;
 }
+
+
+/*CATALOG FORM FiLTER*/
+.form-filter-tr {
+  width: 226px;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.form-filter-td {
+  width: 100%;
+}
+
+.filter-checkbox-span {
+  margin-left: 10px;
+}
+
+.form-filter-td-price {
+  width: 50%;
+}
+
+.form-filter-price {
+  width: 100%;
+}
