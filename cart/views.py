@@ -1,13 +1,20 @@
-from django.shortcuts import render, get_object_or_404, redirect
+import datetime
+from decimal import Decimal
+
+from django.shortcuts import get_object_or_404, redirect
+from django.views.generic import TemplateView
+from django.views.generic.edit import FormMixin
 
 from catalog.models import Product
 
 from .cart import Cart
 from .forms import CartAddProductForm
+from coupons.forms import CouponForm
 
 
-def cart_detail(request):
-    return render(request, 'cart/cart_detail.html')
+class CartDetail(FormMixin, TemplateView):
+    template_name = 'cart/cart_detail.html'
+    form_class = CouponForm
 
 
 def cart_add(request, pk):

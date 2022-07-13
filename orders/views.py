@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.shortcuts import reverse
 from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, DetailView
@@ -15,7 +17,11 @@ class OrderCreate(CreateView):
 
     def form_valid(self, form):
         cart = Cart(self.request)
-        order = form.save()
+        order = form.save(commit=False)
+        if cart.coupon:
+            order.discount = cart.coupon.discount
+            order.coupon = cart.coupon
+        order.save()
         for item in cart:
             OrderItem.objects.create(order=order,
                                      item=item['product'],

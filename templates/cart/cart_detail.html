@@ -22,7 +22,11 @@
                         </p>
                         <h5 class="cart-item-total-price">₴ {{ item.total_price }}</h5>
                         <p class="cart-item-quantity">Кол-во: {{ item.quantity }}</p>
-                        <p class="cart-item-price">Цена: ₴ {{ item.price }}</p>
+                        <p class="cart-item-price">Цена: ₴ {{ item.price }}
+                        {% if item.price_without_discount %}
+                            <s class="cart-item-price-without-discount">{{ item.price_without_discount }}</s>
+                        {% endif %}
+                        </p>
                         <a href="{% url 'cart_del' pk=product.id %}" class="btn btn-outline-dark btn-remove-from-cart">Удалить</a>
                     </div>
                 {% endwith %}
@@ -31,8 +35,21 @@
         {# cart items container #}
 
         <div class="cart-total-info bg-light">
+            {% if  cart.coupon %}
+                <h4 class="text-center bg-dark text-white cart-total-price">
+                    Купон: "{{ cart.coupon }}". Скидка {{ cart.coupon.discount }}%
+                </h4>
+            {% endif %}
 
-            <h4 class="text-center bg-dark text-white cart-total-price">Итог: ₴ {{ cart.get_total_price }}</h4>
+            <h4 class="text-center bg-dark text-white cart-total-price">Итог: ₴
+                    {{ cart.get_total_price }}
+            </h4>
+
+            <form class="coupon-form" method="post" action="{% url 'coupon_apply' %}">
+                {% csrf_token %}
+                {{ form }}
+                <button class="btn btn-outline-dark" type="submit">Активировать купон</button>
+            </form>
 
             <a href="{% url 'order_create' %}" class="btn btn-outline-dark btn-add-to-cart">Оформить заказ</a>
         </div>

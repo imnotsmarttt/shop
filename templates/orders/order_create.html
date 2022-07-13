@@ -17,6 +17,7 @@
             </div>
 
             <div class="cart-total-info bg-light">
+
                 <div class="cart-total-info-items">
                     {% for item in cart %}
                         {% with product=item.product %}
@@ -28,8 +29,20 @@
                         {% endwith %}
                     {% endfor %}
                 </div>
-                <h4 class="text-center bg-dark text-white cart-total-price">Итог: ₴ {{ cart.get_total_price }}</h4>
 
+                <h4 class="text-center bg-dark text-white cart-total-price">Итог: ₴
+                    {% if cart.coupon %}
+                        {{ cart.get_price_after_discount }}
+                    {% else %}
+                        {{ cart.get_price_after_discount }}
+                    {% endif %}
+                </h4>
+
+                {% if  cart.coupon %}
+                    <h4 class="text-center bg-dark text-white cart-total-price">
+                        Купон: "{{ cart.coupon }}". Скидка {{ cart.coupon.discount }}%
+                    </h4>
+                {% endif %}
         </div>
         </div>
     </div>

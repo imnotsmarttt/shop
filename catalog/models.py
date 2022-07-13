@@ -45,7 +45,7 @@ class ProductType(models.Model):
 class Product(models.Model):
     """Модель товара"""
     name = models.CharField(max_length=255, verbose_name='Название товара', db_index=True)
-    slug = models.SlugField(unique=True, db_index=True, blank=True, null=True, default=None)
+    slug = models.SlugField(unique=True, db_index=True, blank=True, null=True, default=None, max_length=255)
     author = models.CharField(max_length=255, verbose_name='ФИО автора')
     description = models.TextField(verbose_name='Описание товара')
     image = models.ImageField(upload_to='product_img/', verbose_name='Картинка товара')

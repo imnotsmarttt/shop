@@ -1,6 +1,10 @@
+from decimal import Decimal
+
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 from catalog.models import Product
+from coupons.models import Coupon
 
 
 class Order(models.Model):
@@ -12,6 +16,8 @@ class Order(models.Model):
     email = models.EmailField(verbose_name='Почта')
     created = models.DateTimeField(auto_now_add=True)
     paid = models.BooleanField(default=False, verbose_name='Оплачено')
+    coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, related_name='order', null=True, blank=True)
+    discount = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
 
     class Meta:
         db_table = 'Order'
@@ -19,8 +25,9 @@ class Order(models.Model):
     def __str__(self):
         return f'Заказ № {self.id}'
 
-    def get_total_price(self):
-        return sum(item.get_cost() for item in self.order_item.all)
+    def get_total_cost(self):
+        total_cost = sum(item.get_cost() for item in self.items.all())
+        return total_cost - total_cost * (self.discount / Decimal('100'))
 
 
 class OrderItem(models.Model):

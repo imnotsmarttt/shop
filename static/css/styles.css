@@ -11449,6 +11449,11 @@ textarea.form-control-lg {
   margin: 0;
 }
 
+.cart-item-price-without-discount {
+  font-size: 13px;
+  color: #797979
+}
+
 .cart-item-quantity {
   position: absolute;
   right: 30px;
@@ -11530,4 +11535,9 @@ textarea.form-control-lg {
 
 .form-filter-price {
   width: 100%;
+}
+
+/*COUPON*/
+.coupon-form {
+  padding: 10px 20px;
 }
