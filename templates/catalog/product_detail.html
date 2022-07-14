@@ -1,60 +1,99 @@
 {% extends '../index.html' %}
 {% load static %}
+{% load mptt_tags %}
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block body %}
 
-<section class="py-5">
-    <div class="px-4 px-lg-5 mt-5 container">
-        {# product name #}
-        <h1 class="display-4 fw-bolder">{{ product.name }}</h1>
-        <div class="product-detail-ifo">
-             {# product img #}
-            <img class="product-detail-img" src="{% static product.image.url %}">
-            <dl class="product-detail-description">
-                <dt class="">Описание:</dt>
-                <dd class="">{{ product.description }}</dd>
-            </dl>
+<div class="container">
+    <section class="py-5">
+        <div class="px-4 px-lg-5 mt-5 container">
+            {# product name #}
+            <h1 class="display-4 fw-bolder">{{ product.name }}</h1>
+            <div class="product-detail-ifo">
+                 {# product img #}
+                <img class="product-detail-img" src="{% static product.image.url %}">
+                <dl class="product-detail-description">
+                    <dt class="">Описание:</dt>
+                    <dd class="">{{ product.description }}</dd>
+                </dl>
 
-            <form class="d-flex add-to-cart" method="post" action="{% url 'cart_add' pk=product.id %}">
+                <form class="d-flex add-to-cart" method="post" action="{% url 'cart_add' pk=product.id %}">
+                    {% csrf_token %}
+                    {{ form_add_to_cart }}
+                    <button href="" class="btn btn-outline-dark btn-add-to-cart" type="submit">
+                        <i class="bi-cart-fill me-1"></i>
+                        Добавить в корзину
+                    </button>
+                </form>
+            </div>
+            <div class="info-about-product">
+                <dl class="product-detail-dl">
+                    <dt class="product-detail-dt">Автор:</dt>
+                    <dd class="product-detail-dd">{{ product.author }}</dd>
+                </dl>
+
+                <dl class="product-detail-dl">
+                    <dt class="product-detail-dt">Цена:</dt>
+                    <dd class="product-detail-dd">₴ {{ product.price }}</dd>
+                </dl>
+
+                <dl class="product-detail-dl">
+                    <dt class="product-detail-dt">Жанры:</dt>
+                    <dd class="product-detail-dd">
+                        {% for genre in product.rubric.all %}
+                        {{ genre }},
+                        {% endfor %}
+                    </dd>
+                </dl>
+
+                <dl class="product-detail-dl">
+                    <dt class="product-detail-dt">Тип продукта:</dt>
+                    <dd class="product-detail-dd">
+                        {% for type in product.type_of_product.all %}
+                        {{ type }},
+                        {% endfor %}
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </section>
+</div>
+<h3 class="bg-dark text-white flex-container"><span class="title-between-containers">Комментарии</span></h3>
+<div class="container">
+        <section class="comment-section">
+
+            <form method="post" class="comment-form">
                 {% csrf_token %}
                 {{ form }}
-                <button href="" class="btn btn-outline-dark btn-add-to-cart" type="submit">
-                    <i class="bi-cart-fill me-1"></i>
-                    Добавить в корзину
-                </button>
+                <button type="submit" class="btn-outline-dark btn">Оставить комментарий</button>
             </form>
-        </div>
-        <div class="info-about-product">
-            <dl class="product-detail-dl">
-                <dt class="product-detail-dt">Автор:</dt>
-                <dd class="product-detail-dd">{{ product.author }}</dd>
-            </dl>
 
-            <dl class="product-detail-dl">
-                <dt class="product-detail-dt">Цена:</dt>
-                <dd class="product-detail-dd">₴ {{ product.price }}</dd>
-            </dl>
+        <ul class="comment-container" style="list-style: none;">
+            {% recursetree comments %}
+                <li class="comment bg-light">
+                    <span class="comment-top-section">
+                        <p class="comment-user">{{ node.user }}</p>
+                        <p class="comment-created">{{ node.created }}</p>
+                    </span>
+                    <p class="comment-content">{{ node.content }}</p>
+                    <form class="comment-reply-form" action="{% url 'comment_reply' parent_id=node.id product_id=product.id %}" method="post">
+                            {% csrf_token %}
+                            {{ form.content }}
+                            <button type="submit" class="btn btn-outline-dark">Ответить</button>
+                        </form>
 
-            <dl class="product-detail-dl">
-                <dt class="product-detail-dt">Жанры:</dt>
-                <dd class="product-detail-dd">
-                    {% for genre in product.rubric.all %}
-                    {{ genre }},
-                    {% endfor %}
-                </dd>
-            </dl>
+                    {% if not node.is_leaf_node %}
+                        <ul class="comment-children" style="list-style: none;">
+                            {{ children }}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endrecursetree %}
+        </ul>
 
-            <dl class="product-detail-dl">
-                <dt class="product-detail-dt">Тип продукта:</dt>
-                <dd class="product-detail-dd">
-                    {% for type in product.type_of_product.all %}
-                    {{ type }},
-                    {% endfor %}
-                </dd>
-            </dl>
-        </div>
-    </div>
-</section>
 
+        </section>
+        {#COMMENT SECRION#}
+</div>
 {% endblock %}

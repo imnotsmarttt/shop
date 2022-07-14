@@ -16,10 +16,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from catalog.views import ProductList
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    path('', ProductList.as_view(), name='index'),
+
     path('product/', include('catalog.urls')),
     path('cart/', include('cart.urls')),
     path('order/', include('orders.urls')),
     path('coupon/', include('coupons.urls')),
+    path('user/', include('users.urls')),
+    path('comment/', include('comments.urls')),
 ]

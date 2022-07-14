@@ -38,11 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'mptt',
+
     'catalog.apps.CatalogConfig',
     'users.apps.UsersConfig',
     'cart.apps.CartConfig',
     'orders.apps.OrdersConfig',
     'coupons.apps.CouponsConfig',
+    'comments.apps.CommentsConfig',
 
 ]
 
@@ -139,7 +142,11 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(STATICFILES_DIRS[0], 'media/')
 
+# Настройки сессий
 CART_SESSION_ID = 'cart'
+
+# Настройки аутентификации
+LOGIN_REDIRECT_URL = 'index'
 
 # настройки конфигурации Celery
 CELERY_BROKER_URL = 'amqp://localhost'
