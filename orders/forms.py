@@ -4,6 +4,7 @@ from .models import Order
 
 
 class OrderCreateForm(forms.ModelForm):
+    """Форма оформления заказа"""
     class Meta:
         model = Order
         fields = ['first_name', 'last_name', 'country', 'city', 'mail', 'email']

@@ -6,6 +6,7 @@ from .models import Coupon
 
 
 class CouponForm(forms.ModelForm):
+    """Форма акцивации купона"""
     class Meta:
         model = Coupon
         fields = ['code']

@@ -33,6 +33,7 @@ class ProductList(ListView):
     paginate_by = 2
 
     def get_queryset(self):
+        # queryset для поиска и фильтрации товара по разным полям
         qs = Product.objects.filter(is_available=True)
         type_query = self.request.GET.getlist('type')
         rubric_query = self.request.GET.getlist('rubric')
@@ -85,6 +86,7 @@ class ProductDetail(DetailView, FormMixin):
             return self.form_invalid(form)
 
     def form_valid(self, form):
+        # Форма публикации комментария
         if self.request.user.is_authenticated:
             comment = form.save(commit=False)
             comment.user = self.request.user

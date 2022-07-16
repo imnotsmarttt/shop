@@ -4,6 +4,7 @@ from .models import ProductComment
 
 
 class CommentForm(forms.ModelForm):
+    """Форма добавления комментария"""
     class Meta:
         model = ProductComment
         fields = ['content']

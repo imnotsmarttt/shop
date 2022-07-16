@@ -8,6 +8,7 @@ from .models import Order, OrderItem
 
 
 def order_to_csv(modeladmin, request, queryset):
+    """Генерация заказов в CSV"""
     opts = modeladmin.model._meta
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment;' \

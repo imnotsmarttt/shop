@@ -7,12 +7,8 @@ from .models import ProductComment
 from catalog.models import Product
 
 
-# class CreateChildComment(CreateView):
-#     model = ProductComment
-#     success_url = re
-
-
 def reply_comment(request, parent_id, product_id):
+    """Ответ на комментарий"""
     prnt = ProductComment.objects.get(id=parent_id)
     prdct = Product.objects.get(id=product_id)
     if request.method == 'POST':

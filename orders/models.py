@@ -9,6 +9,7 @@ from users.models import CustomUser
 
 
 class Order(models.Model):
+    """Модель заказа"""
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, blank=True, null=True, related_name='orders')
     first_name = models.CharField(max_length=255, verbose_name='Имя')
     last_name = models.CharField(max_length=255, verbose_name='Фамилия')
@@ -32,6 +33,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
+    """Модель связывающая заказ с продуктом"""
     order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name='order_item')
     item = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='order')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')

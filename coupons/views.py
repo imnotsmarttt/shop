@@ -9,6 +9,7 @@ from .models import Coupon
 
 @require_POST
 def coupon_apply(request):
+    """Активация купона"""
     now = datetime.now()
     form = CouponForm(request.POST)
     if form.is_valid():

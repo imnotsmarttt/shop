@@ -12,6 +12,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_editable = ['price', 'is_available']
 
     def save_related(self, request, form, formsets, change):
+        """Автоматическое присвоение товару его тип"""
         digital = ProductType.objects.get(name="Цифровой товар")
         material = ProductType.objects.get(name="Материальный товар")
         try:
@@ -26,7 +27,6 @@ class ProductAdmin(admin.ModelAdmin):
         form.save_m2m()
         for formset in formsets:
              self.save_formset(request, form, formset, change=change)
-
 
 
 @admin.register(ProductRubric)

@@ -10,11 +10,13 @@ from coupons.forms import CouponForm
 
 
 class CartDetail(FormMixin, TemplateView):
+    """Детальная информация о карзине"""
     template_name = 'cart/cart_detail.html'
     form_class = CouponForm
 
 
 def cart_add(request, pk):
+    """Добавление товара в корзину"""
     cart = Cart(request)
     product = get_object_or_404(Product, id=pk)
     form = CartAddProductForm(request.POST)
@@ -26,6 +28,7 @@ def cart_add(request, pk):
 
 
 def cart_del(request, pk):
+    """Удаление товара из корзины"""
     cart = Cart(request)
     product = get_object_or_404(Product, id=pk)
     cart.remove(product)
