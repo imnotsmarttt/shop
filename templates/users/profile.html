@@ -1,0 +1,47 @@
+{% extends '../index.html' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block body %}
+
+<h3 class="bg-dark text-white flex-container mt-3"><span class="title-between-containers">Заказы:</span></h3>
+<div class="container mb-4 mt-3">
+    <div class="container w-75">
+        <div class="row">
+            <div class="col border p-2">
+                <h5>Товары</h5>
+            </div>
+
+            <div class="col border p-2">
+                <h5>Общая сумма заказа</h5>
+            </div>
+
+            <div class="col border p-2">
+                <h5>ID заказа</h5>
+            </div>
+        </div>
+
+        {% for order in orders %}
+        <div class="row">
+            <!--Order items-->
+            <div class="col border p-2">
+                {% for item in order.order_item.all %}
+                    <span class="item-name">{{ item.item.name }}</span> x{{ item.quantity }}<br>
+                {% endfor %}
+            </div>
+
+            <!--Order total cost-->
+            <div class="col border p-2">
+                {{ order.get_total_cost }}
+            </div>
+
+            <!--Order ID-->
+            <div class="col border p-2">
+                {{ order.id }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

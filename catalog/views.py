@@ -21,26 +21,23 @@ class ProductList(ListView):
     template_name = 'catalog/product_list.html'
     paginate_by = 2
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(*kwargs)
-        context['products'] = Product.objects.filter(is_available=True)
-        context['max_price'] = self.get_queryset().order_by('-price').first()
-        context['min_price'] = self.get_queryset().order_by('price').first()
-        return context
-
-
-class ProductListFilter(ListView):
-    """Отображение отфильтрованных продуктов"""
-    model = Product
-    template_name = 'catalog/product_list.html'
-    paginate_by = 2
-
     def get_queryset(self):
-        return Product.objects.filter(
-            Q(type_of_product__slug__in=self.request.GET.getlist('type')) |
-            Q(rubric__slug__in=self.request.GET.getlist('rubric')) |
-            Q(price__range=(self.request.GET.get('min_price'), self.request.GET.get('max_price')))
-        ).distinct()
+        if self.request.method == 'GET' and (self.request.GET.getlist('rubric') or self.request.GET.getlist('type') or self.request.GET.getlist('min_price') or self.request.GET.getlist('max_price')):
+            if self.request.GET['min_price']:
+                min_price = self.request.GET['min_price']
+            else:
+                min_price = 1
+            if self.request.GET['max_price']:
+                max_price = self.request.GET['max_price']
+            else:
+                max_price = 99999999
+
+            return Product.objects.filter(is_available=True, price__range=(min_price, max_price)).filter(
+                Q(type_of_product__slug__in=self.request.GET.getlist('type')) |
+                Q(rubric__slug__in=self.request.GET.getlist('rubric'))
+            ).distinct()
+        else:
+            return Product.objects.filter(is_available=True)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)

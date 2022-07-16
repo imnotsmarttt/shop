@@ -5,9 +5,11 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 from catalog.models import Product
 from coupons.models import Coupon
+from users.models import CustomUser
 
 
 class Order(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, blank=True, null=True, related_name='orders')
     first_name = models.CharField(max_length=255, verbose_name='Имя')
     last_name = models.CharField(max_length=255, verbose_name='Фамилия')
     country = models.CharField(max_length=255, verbose_name='Страна')
@@ -26,8 +28,7 @@ class Order(models.Model):
         return f'Заказ № {self.id}'
 
     def get_total_cost(self):
-        total_cost = sum(item.get_cost() for item in self.items.all())
-        return total_cost - total_cost * (self.discount / Decimal('100'))
+        return sum(item.get_cost() for item in self.order_item.all())
 
 
 class OrderItem(models.Model):

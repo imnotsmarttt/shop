@@ -5,29 +5,21 @@
 
 {% block body %}
 
+    {# product name #}
+    <h3 class="bg-dark text-white flex-container mt-5"><span class="title-between-containers">{{ product.name }}</span></h3>
 <div class="container">
-    <section class="py-5">
-        <div class="px-4 px-lg-5 mt-5 container">
-            {# product name #}
-            <h1 class="display-4 fw-bolder">{{ product.name }}</h1>
+        <div class="px-4 px-lg-5 container">
+
             <div class="product-detail-ifo">
                  {# product img #}
                 <img class="product-detail-img" src="{% static product.image.url %}">
-                <dl class="product-detail-description">
-                    <dt class="">Описание:</dt>
-                    <dd class="">{{ product.description }}</dd>
+
+                <div class="info-about-product">
+                <dl class="product-detail-dl">
+                    <dt class="product-detail-dt">Название:</dt>
+                    <dd class="product-detail-dd">{{ product.name }}</dd>
                 </dl>
 
-                <form class="d-flex add-to-cart" method="post" action="{% url 'cart_add' pk=product.id %}">
-                    {% csrf_token %}
-                    {{ form_add_to_cart }}
-                    <button href="" class="btn btn-outline-dark btn-add-to-cart" type="submit">
-                        <i class="bi-cart-fill me-1"></i>
-                        Добавить в корзину
-                    </button>
-                </form>
-            </div>
-            <div class="info-about-product">
                 <dl class="product-detail-dl">
                     <dt class="product-detail-dt">Автор:</dt>
                     <dd class="product-detail-dd">{{ product.author }}</dd>
@@ -55,11 +47,29 @@
                         {% endfor %}
                     </dd>
                 </dl>
+
+                <form class="d-flex add-to-cart" method="post" action="{% url 'cart_add' pk=product.id %}">
+                    {% csrf_token %}
+                    {{ form_add_to_cart }}
+                    <button href="" class="btn btn-outline-dark btn-add-to-cart" type="submit">
+                        <i class="bi-cart-fill me-1"></i>
+                        Добавить в корзину
+                    </button>
+                </form>
+                <!--Add to cart form-->
             </div>
+            <!-- Info about product-->
+
+            <dl class="product-detail-description">
+                    <dt class="">Описание:</dt>
+                    <dd class="">{{ product.description }}</dd>
+                </dl>
+
+            </div>
+
         </div>
-    </section>
 </div>
-<h3 class="bg-dark text-white flex-container"><span class="title-between-containers">Комментарии</span></h3>
+<h3 class="bg-dark text-white flex-container mt-5"><span class="title-between-containers">Комментарии</span></h3>
 <div class="container">
         <section class="comment-section">
 
@@ -77,11 +87,26 @@
                         <p class="comment-created">{{ node.created }}</p>
                     </span>
                     <p class="comment-content">{{ node.content }}</p>
-                    <form class="comment-reply-form" action="{% url 'comment_reply' parent_id=node.id product_id=product.id %}" method="post">
-                            {% csrf_token %}
-                            {{ form.content }}
-                            <button type="submit" class="btn btn-outline-dark">Ответить</button>
-                        </form>
+
+
+                <p>
+                    <button class="comment-reply-link" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Ответить</button>
+                </p>
+                <div class="row">
+                    <div class="col">
+                        <div class="collapse multi-collapse" id="multiCollapseExample1">
+                            <div class="card card-body">
+                                <form class="comment-reply-form" action="{% url 'comment_reply' parent_id=node.id product_id=product.id %}" method="post">
+                                    {% csrf_token %}
+                                    {{ form.content }}
+                                <button type="submit" class="btn btn-outline-dark">Ответить</button>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
 
                     {% if not node.is_leaf_node %}
                         <ul class="comment-children" style="list-style: none;">
@@ -91,6 +116,8 @@
                 </li>
             {% endrecursetree %}
         </ul>
+
+
 
 
         </section>

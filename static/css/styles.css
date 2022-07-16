@@ -11290,7 +11290,6 @@ textarea.form-control-lg {
 
 .filter-form {
   width: fit-content;
-  height: 100%;
   max-width: 226px;
 
   margin-right: 30px;
@@ -11346,7 +11345,7 @@ textarea.form-control-lg {
 
 .info-about-product {
   width: 307px;
-  margin-top: 20px;
+  margin: 20px 0 0 50px
 }
 
 .product-detail-dl {
@@ -11364,8 +11363,8 @@ textarea.form-control-lg {
 }
 
 .product-detail-description {
-  margin: 10px 30px 10px 30px;
-  width: 857px;
+  margin: 10px 30px 10px 50px;
+  width: 456px;
 }
 
 .add-to-cart {
@@ -11645,4 +11644,17 @@ textarea.form-control-lg {
 
 .comment-children {
   padding: 0;
+}
+
+.comment-reply-link {
+  border: none;
+  outline: none;
+  font-weight: 500;
+  background: none;
+  padding: 0;
+  margin-top: 7px;
+}
+
+.item-name {
+  font-weight: 500;
 }

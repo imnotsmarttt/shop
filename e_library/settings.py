@@ -146,6 +146,8 @@ MEDIA_ROOT = os.path.join(STATICFILES_DIRS[0], 'media/')
 CART_SESSION_ID = 'cart'
 
 # Настройки аутентификации
+AUTH_USER_MODEL = 'users.CustomUser'
+
 LOGIN_REDIRECT_URL = 'index'
 
 # настройки конфигурации Celery

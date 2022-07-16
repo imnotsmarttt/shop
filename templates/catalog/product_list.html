@@ -18,9 +18,12 @@
 
         <section class="py-5">
             <div class="px-4 px-lg-5 mt-5 flex-container product-container-n-filter">
-                <form class="filter-form " action="{% url 'catalog_filter' %}" method="get">
+
+            <!--Filter block-->
+                <form class="filter-form " action="{% url 'catalog' %}" method="get">
                     <table>
                         <tbody>
+                            <!-- Product filter by type-->
                             <tr class="form-filter-tr">
                                 <td class="form-filter-td"><h5 class="fw-bolder">Тип товара:</h5></td>
                                 {% for type in types %}
@@ -31,6 +34,7 @@
                                 {% endfor %}
                             </tr>
 
+                            <!-- Product filter by rubric-->
                             <tr class="form-filter-tr">
                                 <td class="form-filter-td"><h5 class="fw-bolder">Жанр:</h5></td>
                                 {% for rubric in rubrics %}
@@ -44,19 +48,19 @@
                             <tr class="form-filter-tr">
                                 <td class="form-filter-td"><h5 class="fw-bolder">Цена:</h5></td>
                                 <td class="form-filter-td-price">
-                                    <input class="form-filter-price" type="text" name="min_price" placeholder="{{ min_price.price }}">
+                                    <input class="form-filter-price" type="text" name="min_price" placeholder="{{ min_price.price }}" value="1">
                                 </td>
                                 <td class="form-filter-td-price">
-                                    <input class="form-filter-price" type="text" name="max_price" placeholder="{{ max_price.price }}" >
+                                    <input class="form-filter-price" type="text" name="max_price" placeholder="{{ max_price.price }}">
                                 </td>
                             </tr>
-
                         </tbody>
-                        <!--Filter table-->
                     </table>
                     <button type="submit" class="btn btn-outline-dark filter-form-btn">Применить фильтр</button>
                     <a href="{% url 'catalog' %}" class="btn btn-outline-dark filter-form-btn">Сбросить фильтры</a>
                 </form>
+                <!-- Product filter table-->
+
                 <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center product-container">
                     {% for product in page_obj %}
                     <div class="col mb-5">

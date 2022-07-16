@@ -21,6 +21,8 @@ class OrderCreate(CreateView):
         if cart.coupon:
             order.discount = cart.coupon.discount
             order.coupon = cart.coupon
+        if self.request.user.is_authenticated:
+            order.user = self.request.user
         order.save()
         for item in cart:
             OrderItem.objects.create(order=order,
