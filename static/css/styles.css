@@ -11658,3 +11658,13 @@ textarea.form-control-lg {
 .item-name {
   font-weight: 500;
 }
+
+.search-input {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.search-btn {
+border-top-left-radius: 0;
+border-bottom-left-radius: 0;
+}

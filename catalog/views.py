@@ -1,13 +1,24 @@
+from decimal import Decimal
+
 from django.shortcuts import reverse
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormMixin
 from django.db.models import Q
+from django.contrib.postgres.search import SearchVector
 
 from .models import Product
 
 from cart.forms import CartAddProductForm
 from comments.forms import CommentForm
 from comments.models import ProductComment
+
+
+def is_valid_queryset_param_list(param):
+    return param != [] and param is not None
+
+
+def is_valid_queryset_param_stroke(param):
+    return param != '' and param is not None
 
 
 class MainPage(ListView):
@@ -22,25 +33,32 @@ class ProductList(ListView):
     paginate_by = 2
 
     def get_queryset(self):
-        if self.request.method == 'GET' and (self.request.GET.getlist('rubric') or self.request.GET.getlist('type') or self.request.GET.getlist('min_price') or self.request.GET.getlist('max_price')):
-            if self.request.GET['min_price']:
-                min_price = self.request.GET['min_price']
-            else:
-                min_price = 1
-            if self.request.GET['max_price']:
-                max_price = self.request.GET['max_price']
-            else:
-                max_price = 99999999
+        qs = Product.objects.filter(is_available=True)
+        type_query = self.request.GET.getlist('type')
+        rubric_query = self.request.GET.getlist('rubric')
+        min_price_query = self.request.GET.get('min_price')
+        max_price_query = self.request.GET.get('max_price')
+        search_query = self.request.GET.get('search')
 
-            return Product.objects.filter(is_available=True, price__range=(min_price, max_price)).filter(
-                Q(type_of_product__slug__in=self.request.GET.getlist('type')) |
-                Q(rubric__slug__in=self.request.GET.getlist('rubric'))
-            ).distinct()
-        else:
-            return Product.objects.filter(is_available=True)
+        if is_valid_queryset_param_list(type_query):
+            qs = qs.filter(type_of_product__slug__in=type_query)
+
+        if is_valid_queryset_param_list(rubric_query):
+            qs = qs.filter(rubric__slug__in=rubric_query)
+
+        if is_valid_queryset_param_stroke(min_price_query):
+            qs = qs.filter(price__gte=min_price_query)
+
+        if is_valid_queryset_param_stroke(max_price_query):
+            qs = qs.filter(price__lt=max_price_query)
+
+        if is_valid_queryset_param_stroke(search_query):
+            qs = qs.annotate(search=SearchVector('name', 'author')).filter(search=search_query)
+
+        return qs
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(*kwargs)
         context['max_price'] = self.get_queryset().order_by('-price').first()
         context['min_price'] = self.get_queryset().order_by('price').first()
         return context
