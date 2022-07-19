@@ -14,7 +14,7 @@
                 {% with product=item.product %}
                     <div class="cart-item-container">
                         <img class="cart-item-image" src="{% static product.image.url %}">
-                        <h5 class="cart-item-name">{{ product.name }}</h5><br>
+                        <a href="{% url 'product_detail' slug=product.slug %}" class="product-link text-dark"><h5 class="cart-item-name">{{ product.name }}</h5></a><br>
                         <p class="cart-item-type">
                             {% for type in product.type_of_product.all %}
                                 {{ type }}

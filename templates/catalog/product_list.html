@@ -18,22 +18,10 @@
 
         <section class="py-5">
             <div class="px-4 px-lg-5 mt-5 flex-container product-container-n-filter">
-
             <!--Filter block-->
                 <form class="filter-form " action="{% url 'catalog' %}" method="get">
                     <table>
                         <tbody>
-                            <!-- Product filter by type-->
-                            <tr class="form-filter-tr">
-                                <td class="form-filter-td"><h5 class="fw-bolder">Тип товара:</h5></td>
-                                {% for type in types %}
-                                <td class="form-filter-td">
-                                    <input type="checkbox" name="type" value="{{ type.slug }}">
-                                    <span class="filter-checkbox-span">{{ type.name }}</span>
-                                </td>
-                                {% endfor %}
-                            </tr>
-
                             <!-- Product filter by rubric-->
                             <tr class="form-filter-tr">
                                 <td class="form-filter-td"><h5 class="fw-bolder">Жанр:</h5></td>

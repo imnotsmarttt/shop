@@ -10,5 +10,8 @@ class Coupon(models.Model):
     discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
     is_active = models.BooleanField()
 
+    class Meta:
+        db_table = 'Coupon'
+
     def __str__(self):
         return self.code

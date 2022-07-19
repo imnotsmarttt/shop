@@ -17,7 +17,7 @@ def coupon_apply(request):
         try:
             coupon = Coupon.objects.get(code__iexact=code, is_active=True, valid_from__lte=now, valid_to__gte=now)
             request.session['coupon_id'] = coupon.id
-        except Coupon.DoesNotExist:
+        except:
             form.add_error('__all__', 'Купон не действителен')
             request.session['coupon_id'] = None
     return redirect('cart_detail')

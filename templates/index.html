@@ -10,7 +10,7 @@
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Bootstrap icons-->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"/>
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{% static './css/styles.css' %}" rel="stylesheet" />
     </head>
@@ -29,15 +29,11 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                         <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'index' %}">Главная</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Каталог</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="{% url 'catalog' %}">Все продукты</a></li>
                                 <li><hr class="dropdown-divider" /></li>
-                                {% for type in types %}
-                                <li><a class="dropdown-item" href="{% url 'catalog' %}?type={{ type.slug }}">{{ type.name }}</a></li>
-                                {% endfor %}
                             </ul>
                         </li>
                     </ul>

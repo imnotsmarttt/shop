@@ -11668,3 +11668,23 @@ textarea.form-control-lg {
 border-top-left-radius: 0;
 border-bottom-left-radius: 0;
 }
+
+.product-link {
+  text-decoration: none;
+}
+
+
+.main-page-top-section {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.main-page-rubric-name {
+
+}
+
+.detail-rubric-btn {
+  width: fit-content;
+  height: fit-content;
+}

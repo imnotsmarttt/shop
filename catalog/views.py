@@ -1,12 +1,10 @@
-from decimal import Decimal
-
 from django.shortcuts import reverse
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormMixin
 from django.db.models import Q
 from django.contrib.postgres.search import SearchVector
 
-from .models import Product
+from .models import Product, ProductRubric
 
 from cart.forms import CartAddProductForm
 from comments.forms import CommentForm
@@ -22,27 +20,31 @@ def is_valid_queryset_param_stroke(param):
 
 
 class MainPage(ListView):
+    """Главная страница"""
     template_name = 'catalog/main_page.html'
-    model = Product
+    model = ProductRubric
+    context_object_name = 'rubrics'
+
+    def get_queryset(self):
+        # Вывод по 4 случайных продукта каждой рубрики
+        filter_prod = {r: [item for item in Product.objects.filter(rubric=r).order_by('?')[:4]]
+                       for r in ProductRubric.objects.all()}
+        return filter_prod
 
 
 class ProductList(ListView):
     """Отображение продуктов"""
     model = Product
     template_name = 'catalog/product_list.html'
-    paginate_by = 2
+    paginate_by = 20
 
     def get_queryset(self):
         # queryset для поиска и фильтрации товара по разным полям
         qs = Product.objects.filter(is_available=True)
-        type_query = self.request.GET.getlist('type')
         rubric_query = self.request.GET.getlist('rubric')
         min_price_query = self.request.GET.get('min_price')
         max_price_query = self.request.GET.get('max_price')
         search_query = self.request.GET.get('search')
-
-        if is_valid_queryset_param_list(type_query):
-            qs = qs.filter(type_of_product__slug__in=type_query)
 
         if is_valid_queryset_param_list(rubric_query):
             qs = qs.filter(rubric__slug__in=rubric_query)
