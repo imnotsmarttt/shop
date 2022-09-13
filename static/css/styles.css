@@ -11589,6 +11589,12 @@ textarea.form-control-lg {
 
 
 /*COMMENT BLOCK*/
+
+.comment-section {
+  width: 500px;
+  margin: 0 auto;
+}
+
 .comment-container {
   width: 500px;
   margin: 15px auto;
@@ -11632,7 +11638,7 @@ textarea.form-control-lg {
 }
 
 /*COMMENT REPLY*/
-.comment-reply-form {
+.comment-form {
   display: block;
   width: 100%;
 }

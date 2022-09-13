@@ -78,26 +78,18 @@ class ProductDetail(DetailView, FormMixin):
         context['form_add_to_cart'] = CartAddProductForm
         context['comments'] = ProductComment.objects.filter(product=self.get_object())
         return context
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
-
-    def form_valid(self, form):
-        # Форма публикации комментария
-        if self.request.user.is_authenticated:
-            comment = form.save(commit=False)
-            comment.user = self.request.user
-            comment.product = self.get_object()
-            comment.save()
-            return super(ProductDetail, self).form_valid(form)
-        else:
-            form.add_error('__all__', 'Комментарий могут оставлять только аутентифицированные пользователи))')
-            return self.form_invalid(form)
+    #
+    # def form_valid(self, form):
+    #     # Форма публикации комментария
+    #     if self.request.user.is_authenticated:
+    #         comment = form.save(commit=False)
+    #         comment.user = self.request.user
+    #         comment.product = self.get_object()
+    #         comment.save()
+    #         return super(ProductDetail, self).form_valid(form)
+    #     else:
+    #         form.add_error('__all__', 'Комментарий могут оставлять только аутентифицированные пользователи))')
+    #         return self.form_invalid(form)
 
     def get_success_url(self):
         return reverse('product_detail', kwargs={'slug': self.get_object().slug})

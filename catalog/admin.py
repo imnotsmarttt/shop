@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import Product, ProductRubric
 
 # Автозаполнение продукции
-# from .util.auto_fill_product import auto_fill
+from .util.auto_fill_product import auto_fill
 
 
 @admin.register(Product)

@@ -90,11 +90,11 @@ WSGI_APPLICATION = 'e_library.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'name',
-        'USER': 'user',
-        'PASSWORD': 'password',
+        'NAME': 'shop',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
         'HOST': 'localhost',
-        'PORT': '8000'
+        'PORT': '5432'
     }
 }
 

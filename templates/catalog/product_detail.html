@@ -72,15 +72,14 @@
 <div class="container">
         <section class="comment-section">
 
-            <form method="post" class="comment-form">
-                {% csrf_token %}
-                {{ form }}
+            <form class="comment-form" data-product="{{ product.id }}">
+                <textarea class="comment-input" placeholder="Введите комментарий"></textarea>
                 <button type="submit" class="btn-outline-dark btn">Оставить комментарий</button>
             </form>
 
         <ul class="comment-container" style="list-style: none;">
             {% recursetree comments %}
-                <li class="comment bg-light">
+                <li class="comment bg-light" id="{{ node.id }}">
                     <span class="comment-top-section">
                         <p class="comment-user">{{ node.user }}</p>
                         <p class="comment-created">{{ node.created }}</p>
@@ -88,24 +87,13 @@
                     <p class="comment-content">{{ node.content }}</p>
 
 
-                <p>
-                    <button class="comment-reply-link" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Ответить</button>
-                </p>
-                <div class="row">
-                    <div class="col">
-                        <div class="collapse multi-collapse" id="multiCollapseExample1">
-                            <div class="card card-body">
-                                <form class="comment-reply-form" action="{% url 'comment_reply' parent_id=node.id product_id=product.id %}" method="post">
-                                    {% csrf_token %}
-                                    {{ form.content }}
-                                <button type="submit" class="btn btn-outline-dark">Ответить</button>
-                            </form>
-                            </div>
-                        </div>
+                    <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseExample{{node.id}}" role="button" aria-expanded="false" aria-controls="collapseExample">Ответить</a> <br>
+                    <div class="collapse" id="collapseExample{{node.id}}">
+                        <form class="comment-form" id="comment-form-{{ node.id }}" data-product="{{ product.id }}" data-parentid="{{ node.id }}">
+                            <textarea class="comment-input" rows="2" cols="40" placeholder="Комментарий" id="comment-text{{ post.id }}"></textarea>
+                            <button class="btn btn-dark btn-sm mt-1" type="submit">Ответить</button>
+                        </form>
                     </div>
-                </div>
-
-
 
                     {% if not node.is_leaf_node %}
                         <ul class="comment-children" style="list-style: none;">
@@ -116,10 +104,75 @@
             {% endrecursetree %}
         </ul>
 
-
-
-
         </section>
         {#COMMENT SECRION#}
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+
+<script>
+
+$(document).on('submit', '.comment-form', function (e) {
+    e.preventDefault();
+
+    var _prdctid = $(this).attr('data-product');
+    var _comment = $(this).find('.comment-input').val();
+    var _parentid = $(this).attr('data-parentid');
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'comment_post' %}",
+        data: {'product_id': _prdctid, 'comment': _comment, 'parentid': _parentid, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+        success: function(response) {
+            if (_parentid) {
+                $(`#${_parentid}`).append(`
+                <ul class="comment-container" style="list-style: none;">
+                    <li class="comment bg-light" id="${response['id']}">
+                        <span class="comment-top-section">
+                            <p class="comment-user">${response['user']}</p>
+                            <p class="comment-created">${response['created']}</p>
+                        </span>
+                        <p class="comment-content">${response['content']}</p>
+
+                        <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseExample${response['id']}" role="button" aria-expanded="false" aria-controls="collapseExample">Ответить</a> <br>
+                        <div class="collapse" id="collapseExample${response['id']}">
+                            <form class="comment-form" id="comment-form-${response['id']}" data-product="{{ product.id }}" data-parentid="${response['id']}">
+                                <textarea class="comment-input" rows="2" cols="40" placeholder="Комментарий" id="comment-text{{ product.id }}"></textarea>
+                                <button class="btn btn-dark btn-sm mt-1" type="submit">Ответить</button>
+                            </form>
+                        </div>
+                    </li>
+                </ul
+                `);
+            } else {
+                $('.comment-container').prepend(`
+                    <li class="comment bg-light" id="${response['id']}">
+                        <span class="comment-top-section">
+                            <p class="comment-user">${response['user']}</p>
+                            <p class="comment-created">${response['created']}</p>
+                        </span>
+                        <p class="comment-content">${response['content']}</p>
+
+                        <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseExample${response['id']}" role="button" aria-expanded="false" aria-controls="collapseExample">Ответить</a> <br>
+                        <div class="collapse" id="collapseExample${response['id']}">
+                            <form class="comment-form" id="comment-form-${response['id']}" data-product="{{ product.id }}" data-parentid="${response['id']}">
+                                <textarea class="comment-input" rows="2" cols="40" placeholder="Комментарий" id="comment-text{{ product.id }}"></textarea>
+                                <button class="btn btn-dark btn-sm mt-1" type="submit">Ответить</button>
+                            </form>
+                        </div>
+                    </li>
+                `);
+
+
+            }
+
+        }
+    });
+})
+
+
+</script>
 {% endblock %}
