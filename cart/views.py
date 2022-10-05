@@ -19,11 +19,8 @@ def cart_add(request, pk):
     """Добавление товара в корзину"""
     cart = Cart(request)
     product = get_object_or_404(Product, id=pk)
-    form = CartAddProductForm(request.POST)
-    if form.is_valid():
-        cd = form.cleaned_data
-        cart.add(product=product,
-                 quantity=cd['quantity'])
+    cart.add(product=product,
+             quantity=int(request.POST.get('quantity')))
     return redirect('cart_detail')
 
 
